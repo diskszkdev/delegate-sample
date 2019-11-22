@@ -157,7 +157,7 @@ namespace DelegateApp
             //var eventClass = new EventClass(new EventHandler<MyEventArgs>((sender, eventArgs) => Console.WriteLine(eventArgs.Message)));
 
             // 非同期実行
-            Task.Run(eventClass.Start);
+            Task.Run(() => eventClass.Start());
 
             Console.ReadKey();
         }
