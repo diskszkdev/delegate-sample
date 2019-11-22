@@ -150,6 +150,15 @@ namespace DelegateApp
             var findResult = list.FindAll(x => x == "fff");
             findResult = list.FindAll(sampleClass.LinqFindFunction);
 
+            // イベントの登録で使用する
+            var eventClass = new EventClass((sender, eventArgs) => Console.WriteLine(eventArgs.Message));
+
+            // 冗長な書き方
+            //var eventClass = new EventClass(new EventHandler<MyEventArgs>((sender, eventArgs) => Console.WriteLine(eventArgs.Message)));
+
+            // 非同期実行
+            Task.Run(eventClass.Start);
+
             Console.ReadKey();
         }
 
@@ -190,5 +199,38 @@ namespace DelegateApp
             Console.WriteLine("Called LinqFindFunction!!!");
             return str == "eee";
         }
+    }
+
+    public class EventClass
+    {
+        private event EventHandler<MyEventArgs> TimeElapsed;
+
+        public EventClass(EventHandler<MyEventArgs> e)
+        {
+            TimeElapsed = e;
+        }
+
+        public void Start()
+        {
+            System.Threading.Thread.Sleep(3000);
+            var args = new MyEventArgs
+            {
+                ErrorNumber = 400,
+                Message = "3秒経過"
+            };
+
+            // イベント発火
+            TimeElapsed?.Invoke(this, args);
+
+            // C#6.0以前(Nullチェックも実装が必要)
+            //TimeElapsed(this, args);
+        }
+    }
+
+    public class MyEventArgs : EventArgs
+    {
+        public int ErrorNumber { get; set; }
+
+        public string Message { get; set; }
     }
 }
