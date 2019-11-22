@@ -157,8 +157,12 @@ namespace DelegateApp
             //var eventClass = new EventClass(new EventHandler<MyEventArgs>((sender, eventArgs) => Console.WriteLine(eventArgs.Message)));
 
             // 非同期実行
-            Task.Run(() => eventClass.Start());
+            Task.Run(() => eventClass.Start()).Wait();
 
+            // ラムダ式でかきたくない場合はキャストすれば使用可能
+            //Task.Run((Action)eventClass.Start).Wait();
+
+            Console.WriteLine("キーを押して終了。");
             Console.ReadKey();
         }
 
